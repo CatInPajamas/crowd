@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+	<link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/css/font-awesome.min.css">
+	<link rel="stylesheet" href="/css/main.css">
+	<link rel="stylesheet" href="/css/doc.min.css">
+	<style>
+	.tree li {
+        list-style-type: none;
+		cursor:pointer;
+	}
+	</style>
+  </head>
+
+  <body>
+
+  <div th:replace="~{commons/bar::#topbar}"></div>
+    <div class="container-fluid">
+      <div class="row">
+		  <div th:replace="~{commons/bar::#sidebar}"></div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<ol class="breadcrumb">
+				  <li><a th:href="@{/admin/main}">首页</a></li>
+				  <li><a th:href="@{/admin/admin_list}">数据列表</a></li>
+				  <li class="active">分配角色</li>
+				</ol>
+			<div class="panel panel-default">
+			  <div class="panel-body">
+				<form role="form" class="form-inline" th:action="@{/admin/assign_role}" method="post">
+					<input type="hidden" name="adminId" th:value="${param.adminId}">
+					<input type="hidden" name="pageNum" th:value="${param.pageNum}">
+					<input type="hidden" name="keyWord" th:value="${param.keyWord}">
+				  <div class="form-group">
+					<label >已分配角色列表</label><br>
+					<select id="leftSelect" name="roleIdList" class="form-control" multiple size="10" style="width:100px;overflow-y:auto;">
+						<li th:each="role :${assignedRoleList}">
+							<option th:value="${role.getId()}" th:text="${role.getName()}"></option>
+						</li>
+                    </select>
+				  </div>
+				  <div class="form-group">
+                        <ul>
+                            <li id="toLeftBtn" class="btn btn-default glyphicon glyphicon-chevron-right"></li>
+                            <br>
+                            <li id="toRightBtn"  class="btn btn-default glyphicon glyphicon-chevron-left" style="margin-top:20px;"></li>
+                        </ul>
+				  </div>
+				  <div class="form-group" style="margin-left:40px;">
+					<label >未分配角色列表</label><br>
+					<select id="rightSelect" class="form-control" multiple size="10" style="width:100px;overflow-y:auto;">
+						<li th:each="role :${unAssignedRoleList}">
+							<option th:value="${role.getId()}" th:text="${role.getName()}"></option>
+						</li>
+                    </select>
+				  </div>
+					<button id="submitBtn" type="submit" class="btn-success btn" style="margin-top:10px;"><i class="glyphicon glyphicon-check"></i>提交</button>
+				</form>
+			  </div>
+			</div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/jquery/jquery-2.1.1.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+	<script src="/script/docs.min.js"></script>
+        <script type="text/javascript">
+            $(function () {
+			    $(".list-group-item").click(function(){
+				    if ( $(this).find("ul") ) {
+						$(this).toggleClass("tree-closed");
+						if ( $(this).hasClass("tree-closed") ) {
+							$("ul", this).hide("fast");
+						} else {
+							$("ul", this).show("fast");
+						}
+					}
+				});
+            });
+
+			$(function () {
+				$("#toLeftBtn").click(function(){
+					$("#leftSelect>option:selected").appendTo("#rightSelect");
+				});
+				$("#toRightBtn").click(function() {
+					$("#rightSelect>option:selected").appendTo("#leftSelect");
+				});
+
+				$("#submitBtn").click(function(){
+				// 在提交表单前把“已分配”部分的option 全部选中
+					$("#leftSelect>option").prop("selected","selected");
+				});
+
+			});
+
+		</script>
+  </body>
+</html>

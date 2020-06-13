@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:data="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+	<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../css/font-awesome.min.css">
+	<link rel="stylesheet" href="../css/main.css">
+	<style>
+	.tree li {
+        list-style-type: none;
+		cursor:pointer;
+	}
+	table tbody tr:nth-child(odd){background:#F4F4F4;}
+	table tbody td:nth-child(even){color:#C00;}
+	</style>
+  </head>
+
+  <body>
+
+  <div th:replace="~{commons/bar::#topbar}"></div>
+    <div class="container-fluid">
+      <div class="row">
+		  <div th:replace="~{commons/bar::#sidebar}"></div>
+        	<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<div class="panel panel-default">
+			 		 <div class="panel-heading">
+						<h3 class="panel-title"><i class="glyphicon glyphicon-th"></i> 项目详情</h3>
+			  		</div>
+			  		<div class="panel-body">
+						<form role="form">
+							<div class="row">
+								<div class="col-lg-6">
+
+									<label >项目名称:</label>
+									<div class="input-group">
+										<input  disabled type="text" class="form-control" th:placeholder="${project.getName()}">
+										<span class="input-group-btn">
+						                <button  class="btn btn-default" type="button" data-toggle="modal" data-target="#myModal2">修改</button>
+						            </span>
+									</div><!-- /input-group -->
+									<br>
+									<label >目标金额:</label>
+									<div class="input-group">
+										<input type="text" class="form-control" disabled th:placeholder="${project.getMoney()}">
+										<span class="input-group-btn">
+								        <button class="btn btn-default" type="button" data-toggle="modal" data-target="#myModal3">修改</button>
+								    </span>
+									</div><!-- /input-group -->
+									<br>
+									<label >状态:</label>
+									<div class="input-group">
+										<input type="text" class="form-control" disabled th:placeholder="${project.getStatus()}">
+										<span class="input-group-btn">
+								        <button class="btn btn-default" type="button" data-toggle="modal" data-target="#myModal4">修改</button>
+								    </span>
+									</div>
+									<br>
+									<label >所属类别:</label>
+									<div class="input-group">
+										<input type="text" class="form-control" disabled th:placeholder="${type}">
+										<span class="input-group-btn">
+								        <button class="btn btn-default" type="button" data-toggle="modal" data-target="#myModal5">修改</button>
+								    </span>
+									</div>
+									<br>
+									<label >限期:</label>
+									<div class="input-group">
+										<input type="text" class="form-control" disabled th:placeholder="${project.getDay()}">
+										<span class="input-group-btn">
+								        <button class="btn btn-default" type="button" data-toggle="modal" data-target="#myModal6">修改</button>
+								    </span>
+									</div>
+									<br>
+									<label >支持项:</label>
+									<a type="button" class="btn btn-primary btn-sm" style="float:right;" data-toggle="modal" data-target="#myModal1"><i class="glyphicon glyphicon-plus"></i> 添加</a>
+									<br>
+									<br>
+									<div class="table-responsive">
+										<table class="table  table-bordered">
+											<thead>
+											<tr >
+												<th width="30">#</th>
+												<th width="100">金额</th>
+												<th width="100">发货时间</th>
+												<th width="300">简介</th>
+												<th width="50">删除</th>
+											</tr>
+											</thead>
+											<tbody>
+											<tr th:each="priceItem:${priceItems}">
+												<td th:text="${priceItemStat.index}+1"></td>
+												<td th:text="${priceItem.getMoney()}"></td>
+												<td th:text="${priceItem.getDelivery()}+'天'"></td>
+												<td th:text="${priceItem.getIntroduce()}"></td>
+												<td>
+													<a type="button" th:href="@{/admin/project_deleteitem(itemid=${priceItem.getId()},projectid=${project.getId()})}" class="btn btn-danger btn-xs"><i class=" glyphicon glyphicon-remove"></i></a>
+												</td>
+											</tr>
+											</tbody>
+										</table>
+									</div>
+
+								</div><!-- /.col-lg-6 -->
+							</div><!-- /.row -->
+						</form>
+					</div>
+				</div>
+			</div>
+	  </div>
+	</div>
+
+  <!-- 模态框（Modal） -->
+  <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+		  <div class="modal-content">
+			  <div class="modal-header">
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				  <h4 class="modal-title" id="myModalLabel">添加支持项</h4>
+			  </div>
+			  <div class="modal-body">
+				  <form role="form" th:action="@{/admin/project_additem(projectid=${project.getId()})}" method="post">
+					  <div class="form-group">
+						  <label >金额</label>
+						  <input type="text" name="money" class="form-control" style="width: 300px;"/>
+					  </div>
+					  <div class="form-group">
+						  <label >发货时间</label>
+						  <input type="text" name="delivery" class="form-control" style="width: 300px;"/>
+					  </div>
+					  <div class="form-group">
+						  <label >介绍</label>
+						  <input type="text" name="introduce" class="form-control" style="width: 300px;"/>
+					  </div>
+					  <button type="submit" class="btn btn-primary">添加</button>
+				  </form>
+			  </div>
+		  </div><!-- /.modal-content -->
+	  </div><!-- /.modal -->
+  </div>
+
+  <!-- 模态框（Modal） -->
+  <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+	  <div class="modal-dialog">
+		  <div class="modal-content">
+			  <div class="modal-header">
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				  <h4 class="modal-title" id="myModalLabe2">修改项目名</h4>
+			  </div>
+			  <div class="modal-body">
+				  <form role="form" th:action="@{/admin/project_updatename(projectid=${project.getId()})}" method="post">
+					  <div class="form-group">
+						  <label >新的项目名</label>
+						  <input type="text" name="name" class="form-control" style="width: 300px;"/>
+					  </div>
+					  <button type="submit" class="btn btn-primary">确认修改</button>
+				  </form>
+			  </div>
+		  </div><!-- /.modal-content -->
+	  </div><!-- /.modal -->
+  </div>
+
+  <!-- 模态框（Modal） -->
+  <div class="modal fade" id="myModal3" tabindex="-1" role="dialog" aria-labelledby="myModalLabel3" aria-hidden="true">
+	  <div class="modal-dialog">
+		  <div class="modal-content">
+			  <div class="modal-header">
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				  <h4 class="modal-title" id="myModalLabel3">修改目标金额</h4>
+			  </div>
+			  <div class="modal-body">
+				  <form role="form" th:action="@{/admin/project_updatemoney(projectid=${project.getId()})}" method="post">
+					  <div class="form-group">
+						  <label >新的目标金额</label>
+						  <input type="text" name="money" class="form-control" style="width: 300px;"/>
+					  </div>
+					  <button type="submit" class="btn btn-primary">确认修改</button>
+				  </form>
+			  </div>
+		  </div><!-- /.modal-content -->
+	  </div><!-- /.modal -->
+  </div>
+
+  <!-- 模态框（Modal） -->
+  <div class="modal fade" id="myModal4" tabindex="-1" role="dialog" aria-labelledby="myModalLabel4" aria-hidden="true">
+	  <div class="modal-dialog">
+		  <div class="modal-content">
+			  <div class="modal-header">
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				  <h4 class="modal-title" id="myModalLabel4">修改状态</h4>
+			  </div>
+			  <div class="modal-body">
+				  <form role="form" th:action="@{/admin/project_updatestatus(projectid=${project.getId()})}" method="post">
+					  <div class="form-group">
+						  <label >状态</label>
+						  <select class="form-control" name="status">
+							  <option th:value="0">即将开始0</option>
+							  <option th:value="1">众筹中1</option>
+							  <option th:value="2">已结束2</option>
+						  </select>
+					  </div>
+					  <button type="submit" class="btn btn-primary">确认修改</button>
+				  </form>
+			  </div>
+		  </div><!-- /.modal-content -->
+	  </div><!-- /.modal -->
+  </div>
+
+  <!-- 模态框（Modal） -->
+  <div class="modal fade" id="myModal5" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5" aria-hidden="true">
+	  <div class="modal-dialog">
+		  <div class="modal-content">
+			  <div class="modal-header">
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				  <h4 class="modal-title" id="myModalLabel5">修改项目类别</h4>
+			  </div>
+			  <div class="modal-body">
+				  <form role="form"  th:action="@{/admin/project_updatetype(projectid=${project.getId()})}" method="post">
+					  <div class="form-group">
+						  <label >新的类别</label>
+						  <select class="form-control" name="typeid" >
+							  <option th:each="projectType:${projectTypes}" th:value="${projectType.getId()}" th:text="${projectType.getName()}"></option>
+						  </select>
+					  </div>
+					  <button type="submit" class="btn btn-primary">添加</button>
+				  </form>
+			  </div>
+		  </div><!-- /.modal-content -->
+	  </div><!-- /.modal -->
+  </div>
+
+  <!-- 模态框（Modal） -->
+  <div class="modal fade" id="myModal6" tabindex="-1" role="dialog" aria-labelledby="myModalLabel6" aria-hidden="true">
+	  <div class="modal-dialog">
+		  <div class="modal-content">
+			  <div class="modal-header">
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				  <h4 class="modal-title" id="myModalLabel6">修改项目限期</h4>
+			  </div>
+			  <div class="modal-body">
+				  <form role="form" th:action="@{/admin/project_updateday(projectid=${project.getId()})}" method="post">
+					  <div class="form-group">
+						  <label >新的限期</label>
+						  <input type="text" name="day" class="form-control" style="width: 300px;"/>
+					  </div>
+					  <button type="submit" class="btn btn-primary">确认修改</button>
+				  </form>
+			  </div>
+		  </div><!-- /.modal-content -->
+	  </div><!-- /.modal -->
+  </div>
+
+
+    <script src="../jquery/jquery-2.1.1.min.js"></script>
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+	<script src="../script/docs.min.js"></script>
+        <script type="text/javascript">
+            $(function () {
+			    $(".list-group-item").click(function(){
+				    if ( $(this).find("ul") ) {
+						$(this).toggleClass("tree-closed");
+						if ( $(this).hasClass("tree-closed") ) {
+							$("ul", this).hide("fast");
+						} else {
+							$("ul", this).show("fast");
+						}
+					}
+				});
+            });
+        </script>
+  </body>
+</html>

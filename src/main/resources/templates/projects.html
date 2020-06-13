@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:data="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+	<link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" href="../css/font-awesome.min.css">
+	<link rel="stylesheet" href="../css/main.css">
+	<style>
+	.tree li {
+        list-style-type: none;
+		cursor:pointer;
+	}
+	table tbody tr:nth-child(odd){background:#F4F4F4;}
+	table tbody td:nth-child(even){color:#C00;}
+	</style>
+  </head>
+
+  <body>
+
+  <div th:replace="~{commons/bar::#topbar}"></div>
+    <div class="container-fluid">
+      <div class="row">
+		  <div th:replace="~{commons/bar::#sidebar}"></div>
+        	<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+				<div class="panel panel-default">
+			 		 <div class="panel-heading">
+						<h3 class="panel-title"><i class="glyphicon glyphicon-th"></i> 数据列表</h3>
+			  		</div>
+			  		<div class="panel-body">
+						<form class="form-inline" role="form" style="float:left;">
+							<div class="form-group has-feedback">
+								<div class="input-group">
+									<div class="input-group-addon">查询条件</div>
+									<input name="keyword" class="form-control has-success" type="text" placeholder="请输入查询条件">
+								</div>
+							</div>
+							<button type="submit" class="btn btn-warning"><i class="glyphicon glyphicon-search"></i> 查询</button>
+						</form>
+						<a type="button" class="btn btn-primary" style="float:right;" data-toggle="modal" data-target="#myModal1"><i class="glyphicon glyphicon-plus"></i> 新增</a>
+						<br>
+						<hr style="clear:both;">
+						<div class="table-responsive">
+							<table class="table  table-bordered">
+								<thead>
+								<tr >
+									<th width="30">#</th>
+									<th width="200">项目名称</th>
+									<th width="150">目标金额</th>
+									<th width="150">已筹资金</th>
+									<th width="100">支持人数</th>
+									<th width="100">状态</th>
+									<th width="100">限期</th>
+									<th width="150">发布日期</th>
+									<th>删除</th>
+								</tr>
+								</thead>
+								<tbody>
+								<tr th:each="project:${projectList}">
+									<td th:text="${projectStat.index}+1"></td>
+									<td th:text="${project.getName()}"></td>
+									<td th:text="${project.getMoney()}"></td>
+									<td th:text="${project.getSupportmoney()}"></td>
+									<td th:text="${project.getSupporter()}"></td>
+									<td th:text="${project.getStatus()}"></td>
+									<td th:text="${project.getDay()}"></td>
+									<td th:text="${project.getDeploydate()}"></td>
+									<td>
+										<a type="button" th:href="@{/admin/project(projectid=${project.getId()})}" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-eye-open"></i></a>
+										<a type="button" th:href="@{/admin/projects_delete(projectid=${project.getId()})}" class="btn btn-danger btn-xs"><i class=" glyphicon glyphicon-remove"></i></a>
+									</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+	  </div>
+	</div>
+
+  <!-- 模态框（Modal） -->
+  <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+		  <div class="modal-content">
+			  <div class="modal-header">
+				  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				  <h4 class="modal-title" id="myModalLabel">添加项目</h4>
+			  </div>
+			  <div class="modal-body">
+				  <form role="form" th:action="@{/admin/projects_add}" method="post">
+					  <div class="form-group">
+						  <label >项目名称</label>
+						  <input type="text" name="name" class="form-control" style="width: 300px;"/>
+					  </div>
+					  <div class="form-group">
+						  <label >项目介绍</label>
+						  <input type="text" name="remark" class="form-control" style="width: 300px;"/>
+					  </div>
+					  <div class="form-group">
+						  <label >目标金额(元）</label>
+						  <input type="text" name="money" class="form-control" style="width: 300px;"/>
+					  </div>
+					  <div class="form-group">
+						  <label >限期(天)</label>
+						  <input type="text" name="day" class="form-control" style="width: 300px;"/>
+					  </div>
+					  <div class="form-group">
+						  <label >缩略图地址</label>
+						  <input type="text" name="path1" class="form-control" style="width: 300px;"/>
+					  </div>
+					  <div class="form-group">
+						  <label >详情图地址</label>
+						  <input type="text" name="path2" class="form-control" style="width: 300px;"/>
+					  </div>
+					  <button type="submit" class="btn btn-primary">添加</button>
+				  </form>
+			  </div>
+		  </div><!-- /.modal-content -->
+	  </div><!-- /.modal -->
+  </div>
+
+
+    <script src="../jquery/jquery-2.1.1.min.js"></script>
+    <script src="../bootstrap/js/bootstrap.min.js"></script>
+	<script src="../script/docs.min.js"></script>
+        <script type="text/javascript">
+            $(function () {
+			    $(".list-group-item").click(function(){
+				    if ( $(this).find("ul") ) {
+						$(this).toggleClass("tree-closed");
+						if ( $(this).hasClass("tree-closed") ) {
+							$("ul", this).hide("fast");
+						} else {
+							$("ul", this).show("fast");
+						}
+					}
+				});
+            });
+        </script>
+  </body>
+</html>
